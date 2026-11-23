@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Return Slip — General Service Division</title>
+  <style>
+    /* =========================================
+       RESET & BASE STYLES
+       ========================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f4;
+      color: #1f2d24;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* =========================================
+       TOP HEADER BAR
+       ========================================= */
+    .topbar {
+      background-color: #9bc503;
+      height: 54px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #132215;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .user-info {
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #132215;
+    }
+
+    .user-role {
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #2f4518;
+    }
+
+    /* =========================================
+       MAIN LAYOUT WRAPPER
+       ========================================= */
+    .layout-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* =========================================
+       SIDEBAR NAVIGATION
+       ========================================= */
+    .sidebar {
+      width: 220px;
+      background-color: #9bc503;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 14px;
+      flex-shrink: 0;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #162418;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: background-color 0.15s ease;
+    }
+
+    .nav-item a:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .nav-item.active a {
+      background-color: #ffffff;
+      color: #162418;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-icon {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      flex-shrink: 0;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      background-color: #ff4757;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.15s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #e83e4d;
+    }
+
+    /* =========================================
+       MAIN CONTENT AREA & CARDS
+       ========================================= */
+    .main-content {
+      flex: 1;
+      padding: 26px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 26px 28px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border: 1px solid #ebeeec;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #173322;
+    }
+
+    .card-title-group svg {
+      width: 20px;
+      height: 20px;
+      stroke: #173322;
+      fill: none;
+      stroke-width: 1.9;
+    }
+
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #173322;
+    }
+
+    /* =========================================
+       FORM ELEMENTS
+       ========================================= */
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2c3e33;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .pill-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 16px;
+      border: 1px solid #3c4841;
+      border-radius: 999px;
+      font-size: 12.5px;
+      color: #1f2d24;
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pill-input::placeholder {
+      color: #88928c;
+    }
+
+    .pill-input:focus {
+      border-color: #7da100;
+      box-shadow: 0 0 0 3px rgba(155, 197, 3, 0.22);
+    }
+
+    /* =========================================
+       BUTTONS
+       ========================================= */
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .pill-btn {
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid #2b3830;
+      background-color: #ffffff;
+      color: #173322;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      background-color: #f0f4f1;
+    }
+
+    .pill-btn.primary:hover {
+      background-color: #9bc503;
+      border-color: #8ab002;
+      color: #132215;
+    }
+
+    .btn-print-slip {
+      height: 32px;
+      padding: 0 14px;
+      border: none;
+      border-radius: 7px;
+      background-color: #ff4757;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-print-slip:hover {
+      background-color: #e83e4d;
+    }
+
+    /* =========================================
+       RECENT RETURN SLIP DISPLAY
+       ========================================= */
+    .recent-slip-details {
+      font-size: 12.5px;
+      color: #243329;
+      line-height: 1.75;
+    }
+
+    .recent-slip-num {
+      margin-bottom: 2px;
+    }
+
+    .recent-slip-num strong {
+      color: #132215;
+    }
+
+    .recent-slip-product {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #132215;
+      margin-bottom: 8px;
+    }
+
+    .recent-slip-date {
+      margin-top: 10px;
+      color: #243329;
+    }
+
+    .empty-state {
+      color: #7c8780;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 24px;
+      background-color: #173322;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 999;
+    }
+
+    .toast.error {
+      background-color: #c0392b;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================================
+       PRINT STYLESHEET (Material Return Slip)
+       ========================================= */
+    @media print {
+      @page {
+        size: portrait;
+        margin: 14mm;
+      }
+
+      body {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        display: block !important;
+      }
+
+      .topbar,
+      .sidebar,
+      .main-content > .card:first-child,
+      .btn-print-slip,
+      .logout-btn {
+        display: none !important;
+      }
+
+      .layout-container,
+      .main-content {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+
+      .main-content > .card:last-child {
+        box-shadow: none !important;
+        border: 1.5px solid #1f2937 !important;
+        border-radius: 4px !important;
+        padding: 24px !important;
+        width: 100% !important;
+      }
+
+      .card-title {
+        font-size: 18px !important;
+      }
+
+      .recent-slip-details {
+        font-size: 13.5px !important;
+        line-height: 1.9 !important;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        width: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-title">GENERAL SERVICE DIVISION</div>
+    <div class="user-info">
+      <div class="user-name" id="headerUserName">CHRISTOPHER JOHN L. HERRERA</div>
+      <div class="user-role" id="headerUserRole">ADMINISTRATOR</div>
+    </div>
+  </header>
+
+  <!-- BODY WRAPPER -->
+  <div class="layout-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="inventory.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Inventory</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="purchaseorder.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span>Purchase Order</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="stockout.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <span>Stock-Out</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="stockcard.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="7" y1="8" x2="17" y2="8"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="7" y1="16" x2="13" y2="16"></line>
+            </svg>
+            <span>Stock Card</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="returnslip.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <polyline points="9 14 4 9 9 4"></polyline>
+              <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <span>Return Slip</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="settings.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="usermanagement.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>User Management</span>
+          </a>
+        </li>
+      </ul>
+
+      <button type="button" class="logout-btn" id="logoutBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        LOGOUT
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- LEFT CARD: NEW MATERIAL RETURN SLIP -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <svg viewBox="0 0 24 24">
+              <polyline points="9 14 4 9 9 4"></polyline>
+              <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <h2 class="card-title">New Material Return Slip</h2>
+          </div>
+        </div>
+
+        <form id="returnSlipForm" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="originalSrfInput">ORIGINAL SRF REFERENCE</label>
+            <input
+              type="text"
+              id="originalSrfInput"
+              class="pill-input"
+              list="srfReferenceList"
+              placeholder="e.g. SRF # 817"
+              required
+            />
+            <datalist id="srfReferenceList"></datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="productNameInput">PRODUCT NAME (SEARCH OR SELECT)</label>
+            <input
+              type="text"
+              id="productNameInput"
+              class="pill-input"
+              list="returnProductList"
+              placeholder="Type item name to return..."
+              required
+            />
+            <datalist id="returnProductList"></datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="returningOfficeInput">RETURNING OFFICE / DEPARTMENT</label>
+            <input
+              type="text"
+              id="returningOfficeInput"
+              class="pill-input"
+              list="officeList"
+              placeholder="e.g. OCBS"
+              required
+            />
+            <datalist id="officeList">
+              <option value="OCBS"></option>
+              <option value="GSD"></option>
+              <option value="ADMIN"></option>
+              <option value="ACCOUNTING"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="departmentInput">DEPARTMENT</label>
+            <input
+              type="text"
+              id="departmentInput"
+              class="pill-input"
+              placeholder="Enter department name..."
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="resenderInput">RESENDER</label>
+            <input
+              type="text"
+              id="resenderInput"
+              class="pill-input"
+              placeholder="Enter returning person's name..."
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="receiverInput">RECEIVER</label>
+            <input
+              type="text"
+              id="receiverInput"
+              class="pill-input"
+              placeholder="Enter receiving GSD personnel..."
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quantityReturnInput">QUANTITY TO RETURN</label>
+            <input
+              type="number"
+              id="quantityReturnInput"
+              class="pill-input"
+              min="1"
+              step="1"
+              placeholder="Enter unused quantity"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="unitInput">UNIT</label>
+            <input
+              type="text"
+              id="unitInput"
+              class="pill-input"
+              list="unitList"
+              placeholder="e.g. PCS, ROLLS, BAGS"
+              required
+            />
+            <datalist id="unitList">
+              <option value="PCS"></option>
+              <option value="ROLLS"></option>
+              <option value="BAGS"></option>
+              <option value="BOX"></option>
+              <option value="SET"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reasonInput">REASON FOR RETURN</label>
+            <input
+              type="text"
+              id="reasonInput"
+              class="pill-input"
+              placeholder="e.g. Excess unused materials"
+              required
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="pill-btn primary">Process Return &amp; Restock</button>
+            <button type="button" class="pill-btn" id="clearFormBtn">Clear Form</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- RIGHT CARD: RECENT RETURN SLIP -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"></circle>
+              <polyline points="12 7 12 12 15 14"></polyline>
+            </svg>
+            <h2 class="card-title">Recent Return Slip</h2>
+          </div>
+          <button type="button" class="btn-print-slip" id="printSlipBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print Slip
+          </button>
+        </div>
+
+        <div id="recentSlipContainer" class="recent-slip-details">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const STORAGE_KEYS = {
+      INVENTORY: 'gsd_inventory',
+      TRANSACTIONS: 'gsd_transactions',
+      RECENT_RETURN_SLIP: 'gsd_recent_return_slip',
+      CURRENT_USER: 'gsd_current_user'
+    };
+
+    const DEFAULT_RECENT_SLIP = {
+      slipNumber: 'RS-2026-001',
+      productName: '0.18M X 1.22M X 4MM THK VINYL TILES',
+      quantity: 30,
+      unit: 'PCS',
+      originalSrf: 'SRF # 817',
+      returningOffice: 'OCBS',
+      department: 'General Services Department',
+      resender: 'John Doe',
+      receiver: 'Christopher John L. Herrera',
+      reason: 'Excess unused materials from project',
+      date: '06/10/2026'
+    };
+
+    const returnSlipForm = document.getElementById('returnSlipForm');
+    const originalSrfInput = document.getElementById('originalSrfInput');
+    const productNameInput = document.getElementById('productNameInput');
+    const returningOfficeInput = document.getElementById('returningOfficeInput');
+    const departmentInput = document.getElementById('departmentInput');
+    const resenderInput = document.getElementById('resenderInput');
+    const receiverInput = document.getElementById('receiverInput');
+    const quantityReturnInput = document.getElementById('quantityReturnInput');
+    const unitInput = document.getElementById('unitInput');
+    const reasonInput = document.getElementById('reasonInput');
+
+    const srfReferenceList = document.getElementById('srfReferenceList');
+    const returnProductList = document.getElementById('returnProductList');
+    const recentSlipContainer = document.getElementById('recentSlipContainer');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+    const printSlipBtn = document.getElementById('printSlipBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const toastEl = document.getElementById('toast');
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = String(text ?? '');
+      return div.innerHTML;
+    }
+
+    function getFormattedDate() {
+      const now = new Date();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      return `${mm}/${dd}/${yyyy}`;
+    }
+
+    function showToast(message, isError = false) {
+      toastEl.textContent = message;
+      toastEl.classList.toggle('error', isError);
+      toastEl.classList.add('show');
+      setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 3200);
+    }
+
+    function getInventory() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.INVENTORY) || '[]');
+    }
+
+    function saveInventory(items) {
+      localStorage.setItem(STORAGE_KEYS.INVENTORY, JSON.stringify(items));
+    }
+
+    function getTransactions() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+    }
+
+    function saveTransactions(logs) {
+      localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(logs));
+    }
+
+    function populateSuggestions() {
+      const inventory = getInventory();
+      const transactions = getTransactions();
+
+      returnProductList.innerHTML = '';
+      inventory.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.productName;
+        returnProductList.appendChild(opt);
+      });
+
+      const srfRefs = new Set();
+      transactions.forEach(t => {
+        if (t.type === 'OUT' && t.reference) {
+          srfRefs.add(t.reference);
+        }
+      });
+
+      srfReferenceList.innerHTML = '';
+      srfRefs.forEach(ref => {
+        const opt = document.createElement('option');
+        opt.value = ref;
+        srfReferenceList.appendChild(opt);
+      });
+    }
+
+    // Auto-fill product details if an SRF or product name is matched
+    originalSrfInput.addEventListener('input', () => {
+      const refVal = originalSrfInput.value.trim().toLowerCase();
+      if (!refVal) return;
+
+      const txns = getTransactions();
+      const match = txns.find(t => t.type === 'OUT' && (t.reference || '').toLowerCase() === refVal);
+      if (match) {
+        if (match.productName && !productNameInput.value) productNameInput.value = match.productName;
+        if (match.office && !returningOfficeInput.value) returningOfficeInput.value = match.office;
+        if (match.unit && !unitInput.value) unitInput.value = match.unit;
+      }
+    });
+
+    productNameInput.addEventListener('input', () => {
+      const prodVal = productNameInput.value.trim().toLowerCase();
+      if (!prodVal) return;
+
+      const inv = getInventory();
+      const match = inv.find(i => (i.productName || '').toLowerCase() === prodVal);
+      if (match && match.unit && !unitInput.value) {
+        unitInput.value = match.unit;
+      }
+    });
+
+    function generateNextSlipNumber() {
+      const txns = getTransactions();
+      const returnCount = txns.filter(t => t.type === 'RETURN').length + 2;
+      const year = new Date().getFullYear();
+      return `RS-${year}-${String(returnCount).padStart(3, '0')}`;
+    }
+
+    function renderRecentSlip() {
+      let slip = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_RETURN_SLIP) || 'null');
+      if (!slip) {
+        slip = DEFAULT_RECENT_SLIP;
+        localStorage.setItem(STORAGE_KEYS.RECENT_RETURN_SLIP, JSON.stringify(slip));
+      }
+
+      recentSlipContainer.innerHTML = `
+        <div class="recent-slip-num">Return Slip #: <strong>${escapeHtml(slip.slipNumber)}</strong></div>
+        <div class="recent-slip-product">${escapeHtml(slip.productName)}</div>
+        <div>Returned Qty: ${escapeHtml(slip.quantity)} ${escapeHtml(slip.unit)}</div>
+        <div>From Ref: ${escapeHtml(slip.originalSrf)} (${escapeHtml(slip.returningOffice)})</div>
+        <div>Department: ${escapeHtml(slip.department)}</div>
+        <div>Resender: ${escapeHtml(slip.resender)} | Receiver: ${escapeHtml(slip.receiver)}</div>
+        <div>Reason: ${escapeHtml(slip.reason)}</div>
+        <div class="recent-slip-date">${escapeHtml(slip.date)}</div>
+      `;
+    }
+
+    returnSlipForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const originalSrf = originalSrfInput.value.trim();
+      const productName = productNameInput.value.trim().toUpperCase();
+      const returningOffice = returningOfficeInput.value.trim().toUpperCase();
+      const department = departmentInput.value.trim();
+      const resender = resenderInput.value.trim();
+      const receiver = receiverInput.value.trim();
+      const quantity = parseInt(quantityReturnInput.value, 10);
+      const unit = unitInput.value.trim().toUpperCase();
+      const reason = reasonInput.value.trim();
+
+      if (!originalSrf || !productName || !returningOffice || !department || !resender || !receiver || isNaN(quantity) || quantity <= 0 || !unit || !reason) {
+        showToast('Please complete all required fields.', true);
+        return;
+      }
+
+      const dateStr = getFormattedDate();
+      const slipNumber = generateNextSlipNumber();
+
+      // 1. Restock inventory
+      const inventory = getInventory();
+      const idx = inventory.findIndex(i => (i.productName || '').toLowerCase() === productName.toLowerCase());
+      let newBalance = quantity;
+
+      if (idx > -1) {
+        inventory[idx].quantity = Number(inventory[idx].quantity) + quantity;
+        inventory[idx].unit = unit;
+        inventory[idx].lastUpdated = dateStr;
+        newBalance = inventory[idx].quantity;
+      } else {
+        inventory.push({
+          id: 'ITEM-' + Date.now(),
+          productName: productName,
+          category: 'Construction Materials',
+          unit: unit,
+          quantity: quantity,
+          unitCost: 0,
+          dateAdded: dateStr
+        });
+      }
+      saveInventory(inventory);
+
+      // 2. Log return transaction for Stock Card
+      const transactions = getTransactions();
+      transactions.unshift({
+        id: 'TXN-' + Date.now(),
+        type: 'RETURN',
+        reference: `${slipNumber} (${originalSrf})`,
+        productName: productName,
+        office: returningOffice,
+        department: department,
+        resender: resender,
+        receiver: receiver,
+        reason: reason,
+        unit: unit,
+        quantity: quantity,
+        balance: newBalance,
+        date: dateStr,
+        recordedBy: receiver
+      });
+      saveTransactions(transactions);
+
+      // 3. Save & render Recent Return Slip
+      const slipData = {
+        slipNumber,
+        productName,
+        quantity,
+        unit,
+        originalSrf,
+        returningOffice,
+        department,
+        resender,
+        receiver,
+        reason,
+        date: dateStr
+      };
+      localStorage.setItem(STORAGE_KEYS.RECENT_RETURN_SLIP, JSON.stringify(slipData));
+
+      renderRecentSlip();
+      populateSuggestions();
+      returnSlipForm.reset();
+      showToast(`Restocked ${quantity} ${unit} of ${productName} via ${slipNumber}.`);
+    });
+
+    clearFormBtn.addEventListener('click', () => {
+      returnSlipForm.reset();
+      originalSrfInput.focus();
+    });
+
+    printSlipBtn.addEventListener('click', () => {
+      window.print();
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+      if (savedUser) {
+        if (savedUser.displayName) {
+          document.getElementById('headerUserName').textContent = savedUser.displayName.toUpperCase();
+        }
+        if (savedUser.role) {
+          document.getElementById('headerUserRole').textContent = savedUser.role.toUpperCase();
+        }
+      }
+
+      if (!receiverInput.value) {
+        receiverInput.placeholder = 'Enter receiving GSD personnel...';
+      }
+
+      populateSuggestions();
+      renderRecentSlip();
+    });
+  </script>
+</body>
+</html>

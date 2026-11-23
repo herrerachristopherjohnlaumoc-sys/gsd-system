@@ -1,0 +1,281 @@
+.po-layout {
+    display: grid;
+    grid-template-columns: minmax(380px, 1.48fr) minmax(300px, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  
+  .po-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 26px 28px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  }
+  
+  .po-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .po-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .po-card-title {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+  
+  .po-field {
+    margin-bottom: 14px;
+  }
+  
+  .po-label {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #374151;
+    letter-spacing: 0.45px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  
+  .po-input,
+  .po-select {
+    width: 100%;
+    height: 38px;
+    padding: 0 16px;
+    background-color: #ffffff;
+    border: 1px solid #6b7280;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: #1f2937;
+    outline: none;
+  }
+  
+  .po-input[readonly] {
+    background-color: #f9fafb;
+    color: #374151;
+  }
+  
+  .po-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 22px;
+  }
+  
+  .po-btn-primary,
+  .po-btn-secondary {
+    height: 38px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #374151;
+    transition: all 0.15s ease;
+  }
+  
+  .po-btn-primary {
+    background-color: #ffffff;
+    color: #1f2937;
+  }
+  
+  .po-btn-primary:hover {
+    background-color: #266b47;
+    border-color: #266b47;
+    color: #ffffff;
+  }
+  
+  .po-btn-secondary {
+    background-color: #ffffff;
+    color: #1f2937;
+  }
+  
+  .po-btn-secondary:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .po-btn-clear-sm {
+    height: 32px;
+    padding: 0 18px;
+    background-color: #ffffff;
+    color: #1f2937;
+    border: 1px solid #6b7280;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .po-btn-clear-sm:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .recent-po-entry {
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+  
+  .recent-po-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .recent-po-ref {
+    font-size: 12px;
+    color: #4b5563;
+    margin-bottom: 4px;
+  }
+  
+  .recent-po-product {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #111827;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  
+  .recent-po-meta {
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  
+  .recent-po-footer {
+    font-size: 12px;
+    color: #4b5563;
+  }
+  
+  .toast-banner {
+    position: fixed;
+    bottom: 22px;
+    right: 24px;
+    background-color: #1e3b24;
+    color: #ffffff;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 999;
+  }
+  
+  .toast-banner.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 960px) {
+    .po-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+/* =========================================
+   PRINT STYLES (Auto-Fit Table to Page)
+   ========================================= */
+@media print {
+  @page {
+    size: landscape;
+    margin: 0.4in;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    min-height: auto !important;
+  }
+
+  /* Hide sidebar, filter toolbar, and action buttons */
+  .sidebar,
+  .controls-toolbar,
+  .btn-logout {
+    display: none !important;
+  }
+
+  /* Clean top header for print */
+  .topbar {
+    background-color: #a2cc11 !important;
+    padding: 10px 16px !important;
+    height: auto !important;
+    margin-bottom: 14px;
+    border-radius: 6px;
+  }
+
+  .app-container {
+    display: block !important;
+    min-height: auto !important;
+  }
+
+  .main-content {
+    padding: 0 !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  /* Compact top header & KPI cards */
+  .top-header-section {
+    margin-bottom: 14px !important;
+    align-items: center !important;
+  }
+
+  .kpi-card {
+    padding: 8px 14px !important;
+    width: 185px !important;
+    box-shadow: none !important;
+  }
+
+  /* Ensure entire table fits 100% of printable width */
+  .table-container {
+    width: 100% !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .inventory-table {
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  .inventory-table th,
+  .inventory-table td {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Hide the ACTIONS column (last column) on printed paper */
+  .inventory-table th:last-child,
+  .inventory-table td:last-child {
+    display: none !important;
+  }
+
+  /* Prevent rows from splitting awkwardly across pages */
+  .inventory-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>General Service Division - Inventory Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f4f7f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      color: #1e293b;
+    }
+
+    /* Background Decorative Circles */
+    .bg-decorations {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .floating-circle {
+      position: absolute;
+      border-radius: 50%;
+      background-color: #e7efe7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8ca897;
+    }
+
+    /* Top Left: Forklift */
+    .circle-forklift {
+      width: 140px;
+      height: 140px;
+      top: 12%;
+      left: 26%;
+    }
+
+    /* Top Right: Price Tag */
+    .circle-tag {
+      width: 120px;
+      height: 120px;
+      top: 15%;
+      right: 26%;
+    }
+
+    /* Bottom Left: Cube/Box */
+    .circle-box {
+      width: 112px;
+      height: 112px;
+      bottom: 15%;
+      left: 28%;
+    }
+
+    /* Bottom Right: Drill/Tool */
+    .circle-drill {
+      width: 130px;
+      height: 130px;
+      bottom: 12%;
+      right: 27%;
+    }
+
+    /* Login Card */
+    .login-card {
+      position: relative;
+      z-index: 1;
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 530px;
+      padding: 58px 46px 50px;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+      text-align: center;
+      margin: 20px;
+    }
+
+    .title {
+      font-size: 21px;
+      font-weight: 700;
+      color: #1f2937;
+      letter-spacing: 0.4px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #6b7280;
+      margin-bottom: 34px;
+    }
+
+    .login-form {
+      text-align: left;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #374151;
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 42px 0 40px;
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: #1f2937;
+      outline: none;
+      transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input::placeholder {
+      color: #7d8590;
+    }
+
+    .form-input:focus {
+      background-color: #ffffff;
+      border-color: #266b47;
+      box-shadow: 0 0 0 3px rgba(38, 107, 71, 0.12);
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .toggle-password:hover {
+      color: #374151;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 44px;
+      margin-top: 10px;
+      background-color: #266b47;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+      background-color: #1f583a;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.995);
+    }
+
+    .card-footer {
+      margin-top: 26px;
+      text-align: center;
+    }
+
+    .forgot-link {
+      display: inline-block;
+      font-size: 12.5px;
+      color: #266b47;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 22px;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+      color: #1f583a;
+    }
+
+    .authorized-note {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #4b5563;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 1100px) {
+      .circle-forklift { left: 10%; }
+      .circle-tag { right: 10%; }
+      .circle-box { left: 12%; }
+      .circle-drill { right: 12%; }
+    }
+
+    @media (max-width: 640px) {
+      .login-card {
+        padding: 44px 28px 38px;
+      }
+      .floating-circle {
+        transform: scale(0.75);
+      }
+      .circle-forklift { top: 4%; left: 4%; }
+      .circle-tag { top: 5%; right: 4%; }
+      .circle-box { bottom: 5%; left: 5%; }
+      .circle-drill { bottom: 4%; right: 5%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Decorative Background Icons -->
+  <div class="bg-decorations" aria-hidden="true">
+    <!-- Top Left: Forklift -->
+    <div class="floating-circle circle-forklift">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 12H5a2 2 0 0 0-2 2v3h2"/>
+        <path d="M9 17h5"/>
+        <circle cx="7" cy="17" r="2"/>
+        <circle cx="16" cy="17" r="2"/>
+        <path d="M12 12V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v5"/>
+        <path d="M19 4v13h3"/>
+      </svg>
+    </div>
+
+    <!-- Top Right: Tag -->
+    <div class="floating-circle circle-tag">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+        <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+      </svg>
+    </div>
+
+    <!-- Bottom Left: Package/Box -->
+    <div class="floating-circle circle-box">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+    </div>
+
+    <!-- Bottom Right: Drill/Tool -->
+    <div class="floating-circle circle-drill">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 9c0 .6-.4 1-1 1H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9c.6 0 1 .4 1 1Z"/>
+        <path d="M18 6h4"/>
+        <path d="M14 4h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3"/>
+        <path d="m5 10-2 8"/>
+        <path d="M12 10v3c0 .6-.4 1-1 1H8"/>
+        <path d="m7 18 2-8"/>
+        <path d="M5 22c-1.7 0-3-1.3-3-3 0-.6.4-1 1-1h7c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Center Login Card -->
+  <main class="login-card">
+    <h1 class="title">GENERAL SERVICE DIVISION</h1>
+    <p class="subtitle">Inventory Management System</p>
+
+    <form class="login-form" onsubmit="event.preventDefault();">
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username" class="form-label">LOGIN</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-input"
+            placeholder="Username"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password" class="form-label">PASSWORD</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="7.5" cy="15.5" r="3.5"/>
+              <path d="m21 2-9.6 9.6"/>
+              <path d="m15.5 7.5 3 3L22 7l-3-3"/>
+            </svg>
+          </span>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="Enter password"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            id="togglePassword"
+            aria-label="Toggle password visibility"
+          >
+            <!-- Eye Open Icon -->
+            <svg id="eyeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn-submit">LOG IN</button>
+    </form>
+
+    <!-- Footer Links & Notice -->
+    <div class="card-footer">
+      <a href="#" class="forgot-link">Forgot Password?</a>
+      <p class="authorized-note">AUTHORIZED PERSONNEL OF GSD ONLY</p>
+    </div>
+  </main>
+
+  <script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    togglePassword.addEventListener('click', () => {
+      const isPassword = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+
+      if (isPassword) {
+        eyeIcon.innerHTML = `
+          <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+          <line x1="2" y1="2" x2="22" y2="22"/>
+        `;
+      } else {
+        eyeIcon.innerHTML = `
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

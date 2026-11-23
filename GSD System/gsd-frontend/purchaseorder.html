@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purchase Order — General Service Division</title>
+  <style>
+    /* =========================================
+       RESET & BASE STYLES
+       ========================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f4;
+      color: #1f2d24;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* =========================================
+       TOP HEADER BAR
+       ========================================= */
+    .topbar {
+      background-color: #9bc503;
+      height: 54px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #132215;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .user-info {
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #132215;
+    }
+
+    .user-role {
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #2f4518;
+    }
+
+    /* =========================================
+       MAIN LAYOUT WRAPPER
+       ========================================= */
+    .layout-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* =========================================
+       SIDEBAR NAVIGATION
+       ========================================= */
+    .sidebar {
+      width: 220px;
+      background-color: #9bc503;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 14px 18px 14px;
+      flex-shrink: 0;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #162418;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: background-color 0.15s ease;
+    }
+
+    .nav-item a:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .nav-item.active a {
+      background-color: #ffffff;
+      color: #162418;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-icon {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      flex-shrink: 0;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      background-color: #ff4757;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.15s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #e83e4d;
+    }
+
+    /* =========================================
+       MAIN CONTENT AREA & CARDS
+       ========================================= */
+    .main-content {
+      flex: 1;
+      padding: 26px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 26px 28px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border: 1px solid #ebeeec;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #173322;
+    }
+
+    .card-title-group svg {
+      width: 20px;
+      height: 20px;
+      stroke: #173322;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #173322;
+    }
+
+    /* =========================================
+       FORM ELEMENTS
+       ========================================= */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2c3e33;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .pill-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 16px;
+      border: 1px solid #3c4841;
+      border-radius: 999px;
+      font-size: 13px;
+      color: #1f2d24;
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pill-input::placeholder {
+      color: #88928c;
+    }
+
+    .pill-input:focus {
+      border-color: #7da100;
+      box-shadow: 0 0 0 3px rgba(155, 197, 3, 0.22);
+    }
+
+    .pill-input[readonly] {
+      background-color: #fafbfa;
+      color: #1f2d24;
+      font-weight: 600;
+    }
+
+    /* =========================================
+       BUTTONS
+       ========================================= */
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .pill-btn {
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid #2b3830;
+      background-color: #ffffff;
+      color: #173322;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      background-color: #f0f4f1;
+    }
+
+    .pill-btn.primary:hover {
+      background-color: #9bc503;
+      border-color: #8ab002;
+      color: #132215;
+    }
+
+    .pill-btn-sm {
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1px solid #2b3830;
+      background-color: #ffffff;
+      color: #173322;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .pill-btn-sm:hover {
+      background-color: #f0f4f1;
+    }
+
+    /* =========================================
+       RECENT PURCHASE ORDER DISPLAY
+       ========================================= */
+    .recent-po-details {
+      font-size: 13px;
+      color: #243329;
+      line-height: 1.75;
+    }
+
+    .recent-po-ref {
+      margin-bottom: 2px;
+    }
+
+    .recent-po-product {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #132215;
+      margin-bottom: 6px;
+    }
+
+    .recent-po-meta {
+      margin-top: 10px;
+    }
+
+    .empty-state {
+      color: #7c8780;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 24px;
+      background-color: #173322;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive Breakpoint */
+    @media (max-width: 960px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        width: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-title">GENERAL SERVICE DIVISION</div>
+    <div class="user-info">
+      <div class="user-name" id="headerUserName">CHRISTOPHER JOHN L. HERRERA</div>
+      <div class="user-role" id="headerUserRole">ADMINISTRATOR</div>
+    </div>
+  </header>
+
+  <!-- BODY WRAPPER -->
+  <div class="layout-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="inventory.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Inventory</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="purchaseorder.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span>Purchase Order</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="stockout.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <span>Stock-Out</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="stockcard.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="7" y1="8" x2="17" y2="8"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="7" y1="16" x2="13" y2="16"></line>
+            </svg>
+            <span>Stock Card</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="returnslip.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <polyline points="9 14 4 9 9 4"></polyline>
+              <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <span>Return Slip</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="settings.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="usermanagement.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>User Management</span>
+          </a>
+        </li>
+      </ul>
+
+      <button type="button" class="logout-btn" id="logoutBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        LOGOUT
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- LEFT CARD: NEW PURCHASE ORDER FORM -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <h2 class="card-title">New Purchase Order</h2>
+          </div>
+        </div>
+
+        <form id="purchaseOrderForm" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="referenceInput">REFERENCE</label>
+            <input
+              type="text"
+              id="referenceInput"
+              class="pill-input"
+              placeholder="Enter reference number or PO code..."
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="productNameInput">PRODUCT NAME (SEARCH OR NEW)</label>
+            <input
+              type="text"
+              id="productNameInput"
+              class="pill-input"
+              list="productSuggestions"
+              placeholder="Type to search or add new..."
+              required
+            />
+            <datalist id="productSuggestions"></datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="categoryInput">CATEGORY</label>
+            <input
+              type="text"
+              id="categoryInput"
+              class="pill-input"
+              list="categorySuggestions"
+              placeholder="Select or type new category"
+              required
+            />
+            <datalist id="categorySuggestions">
+              <option value="Construction Materials"></option>
+              <option value="Electrical Supplies"></option>
+              <option value="Plumbing Supplies"></option>
+              <option value="Office Supplies"></option>
+              <option value="Janitorial Supplies"></option>
+              <option value="Hardware & Tools"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="unitInput">UNIT</label>
+            <input
+              type="text"
+              id="unitInput"
+              class="pill-input"
+              list="unitSuggestions"
+              placeholder="Select or type a new unit"
+              required
+            />
+            <datalist id="unitSuggestions">
+              <option value="PCS"></option>
+              <option value="BOX"></option>
+              <option value="SET"></option>
+              <option value="ROLL"></option>
+              <option value="BAG"></option>
+              <option value="GALLON"></option>
+              <option value="METER"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quantityInput">QUANTITY TO ADD</label>
+            <input
+              type="number"
+              id="quantityInput"
+              class="pill-input"
+              min="1"
+              step="1"
+              placeholder="Enter quantity"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="unitCostInput">UNIT COST</label>
+            <input
+              type="number"
+              id="unitCostInput"
+              class="pill-input"
+              min="0.01"
+              step="0.01"
+              placeholder="Enter unit cost per piece"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="totalCostInput">TOTAL COST</label>
+            <input
+              type="text"
+              id="totalCostInput"
+              class="pill-input"
+              placeholder="Enter unit cost to calculate the total cost in quantity"
+              readonly
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="pill-btn primary">Add to Inventory</button>
+            <button type="button" class="pill-btn" id="clearFormBtn">Clear Form</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- RIGHT CARD: RECENT PURCHASE ORDER -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"></circle>
+              <polyline points="12 7 12 12 15 14"></polyline>
+            </svg>
+            <h2 class="card-title">Recent Purchase Order</h2>
+          </div>
+          <button type="button" class="pill-btn-sm" id="clearRecentBtn">Clear Form</button>
+        </div>
+
+        <div id="recentPoContainer" class="recent-po-details">
+          <!-- Populated dynamically by JavaScript -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // =========================================
+    // STORAGE KEYS (Shared across MPA pages)
+    // =========================================
+    const STORAGE_KEYS = {
+      INVENTORY: 'gsd_inventory',
+      TRANSACTIONS: 'gsd_transactions',
+      RECENT_PO: 'gsd_recent_po',
+      CURRENT_USER: 'gsd_current_user'
+    };
+
+    // =========================================
+    // DEFAULT INITIAL DATA (Matches Screenshot)
+    // =========================================
+    const DEFAULT_RECENT_PO = {
+      reference: 'PO-2026-001',
+      productName: 'VINLYN TILES',
+      category: 'Construction Materials',
+      unit: 'PCS',
+      quantity: 1400,
+      unitCost: 205.67,
+      totalCost: 287940.80,
+      date: '09/11/2026',
+      recordedBy: 'Herrera, Christopher John L.'
+    };
+
+    // =========================================
+    // DOM ELEMENTS
+    // =========================================
+    const poForm = document.getElementById('purchaseOrderForm');
+    const referenceInput = document.getElementById('referenceInput');
+    const productNameInput = document.getElementById('productNameInput');
+    const categoryInput = document.getElementById('categoryInput');
+    const unitInput = document.getElementById('unitInput');
+    const quantityInput = document.getElementById('quantityInput');
+    const unitCostInput = document.getElementById('unitCostInput');
+    const totalCostInput = document.getElementById('totalCostInput');
+
+    const productSuggestions = document.getElementById('productSuggestions');
+    const categorySuggestions = document.getElementById('categorySuggestions');
+    const unitSuggestions = document.getElementById('unitSuggestions');
+
+    const recentPoContainer = document.getElementById('recentPoContainer');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+    const clearRecentBtn = document.getElementById('clearRecentBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const toastEl = document.getElementById('toast');
+
+    // =========================================
+    // HELPER FUNCTIONS
+    // =========================================
+    function formatCurrency(num) {
+      return Number(num).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function getFormattedDate() {
+      const now = new Date();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      return `${mm}/${dd}/${yyyy}`;
+    }
+
+    function getCurrentOperatorName() {
+      const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+      if (savedUser && savedUser.fullName) {
+        return savedUser.fullName;
+      }
+      return 'Herrera, Christopher John L.';
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add('show');
+      setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // =========================================
+    // DATA LOADERS & AUTOCOMPLETE
+    // =========================================
+    function getInventory() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.INVENTORY) || '[]');
+    }
+
+    function saveInventory(items) {
+      localStorage.setItem(STORAGE_KEYS.INVENTORY, JSON.stringify(items));
+    }
+
+    function getTransactions() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+    }
+
+    function saveTransactions(logs) {
+      localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(logs));
+    }
+
+    function populateDatalists() {
+      const inventory = getInventory();
+
+      // Populate product suggestions from existing inventory
+      productSuggestions.innerHTML = '';
+      const categories = new Set(['Construction Materials', 'Electrical Supplies', 'Plumbing Supplies', 'Office Supplies', 'Janitorial Supplies', 'Hardware & Tools']);
+      const units = new Set(['PCS', 'BOX', 'SET', 'ROLL', 'BAG', 'GALLON', 'METER']);
+
+      inventory.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.productName;
+        productSuggestions.appendChild(option);
+
+        if (item.category) categories.add(item.category);
+        if (item.unit) units.add(item.unit.toUpperCase());
+      });
+
+      categorySuggestions.innerHTML = '';
+      categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        categorySuggestions.appendChild(opt);
+      });
+
+      unitSuggestions.innerHTML = '';
+      units.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u;
+        unitSuggestions.appendChild(opt);
+      });
+    }
+
+    // Auto-fill Category, Unit, and Unit Cost if an existing product is chosen
+    productNameInput.addEventListener('input', () => {
+      const typedName = productNameInput.value.trim().toLowerCase();
+      if (!typedName) return;
+
+      const inventory = getInventory();
+      const match = inventory.find(item => item.productName.toLowerCase() === typedName);
+
+      if (match) {
+        categoryInput.value = match.category || '';
+        unitInput.value = match.unit || '';
+        if (match.unitCost) {
+          unitCostInput.value = match.unitCost;
+          calculateTotalCost();
+        }
+      }
+    });
+
+    // =========================================
+    // LIVE TOTAL COST CALCULATION
+    // =========================================
+    function calculateTotalCost() {
+      const qty = parseFloat(quantityInput.value);
+      const cost = parseFloat(unitCostInput.value);
+
+      if (!isNaN(qty) && qty > 0 && !isNaN(cost) && cost >= 0) {
+        const total = qty * cost;
+        totalCostInput.value = formatCurrency(total);
+      } else {
+        totalCostInput.value = '';
+      }
+    }
+
+    quantityInput.addEventListener('input', calculateTotalCost);
+    unitCostInput.addEventListener('input', calculateTotalCost);
+
+    // =========================================
+    // RENDER RECENT PURCHASE ORDER CARD
+    // =========================================
+    function renderRecentPO() {
+      const storedPO = localStorage.getItem(STORAGE_KEYS.RECENT_PO);
+
+      // Initialize with default sample on very first visit if key doesn't exist
+      if (storedPO === null) {
+        localStorage.setItem(STORAGE_KEYS.RECENT_PO, JSON.stringify(DEFAULT_RECENT_PO));
+      }
+
+      const po = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_PO) || 'null');
+
+      if (!po) {
+        recentPoContainer.innerHTML = `<p class="empty-state">No recent purchase order displayed.</p>`;
+        return;
+      }
+
+      recentPoContainer.innerHTML = `
+        <div class="recent-po-ref">Ref: ${escapeHtml(po.reference)}</div>
+        <div class="recent-po-product">${escapeHtml(po.productName)}</div>
+        <div>Qty: ${po.quantity} ${escapeHtml(po.unit)}</div>
+        <div>Unit Cost: ${formatCurrency(po.unitCost)}</div>
+        <div>Total Cost: ${formatCurrency(po.totalCost)}</div>
+        <div>Unit: ${escapeHtml(po.unit)}</div>
+        <div class="recent-po-meta">${escapeHtml(po.date)} — ${escapeHtml(po.recordedBy)}</div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // =========================================
+    // FORM SUBMISSION: ADD TO INVENTORY
+    // =========================================
+    poForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const reference = referenceInput.value.trim();
+      const productName = productNameInput.value.trim().toUpperCase();
+      const category = categoryInput.value.trim();
+      const unit = unitInput.value.trim().toUpperCase();
+      const quantity = parseInt(quantityInput.value, 10);
+      const unitCost = parseFloat(unitCostInput.value);
+
+      if (!reference || !productName || !category || !unit || isNaN(quantity) || quantity <= 0 || isNaN(unitCost) || unitCost < 0) {
+        showToast('Please complete all fields with valid values.');
+        return;
+      }
+
+      const totalCost = Number((quantity * unitCost).toFixed(2));
+      const dateStr = getFormattedDate();
+      const operatorName = getCurrentOperatorName();
+
+      // 1. Update Inventory in localStorage
+      const inventory = getInventory();
+      const existingIndex = inventory.findIndex(
+        item => item.productName.toLowerCase() === productName.toLowerCase()
+      );
+
+      let newBalance = quantity;
+
+      if (existingIndex > -1) {
+        inventory[existingIndex].quantity = Number(inventory[existingIndex].quantity) + quantity;
+        inventory[existingIndex].category = category;
+        inventory[existingIndex].unit = unit;
+        inventory[existingIndex].unitCost = unitCost;
+        inventory[existingIndex].lastUpdated = dateStr;
+        newBalance = inventory[existingIndex].quantity;
+      } else {
+        inventory.push({
+          id: 'ITEM-' + Date.now(),
+          productName: productName,
+          category: category,
+          unit: unit,
+          quantity: quantity,
+          unitCost: unitCost,
+          lastUpdated: dateStr
+        });
+      }
+      saveInventory(inventory);
+
+      // 2. Log Transaction for Stock Card module
+      const transactions = getTransactions();
+      transactions.unshift({
+        id: 'TXN-' + Date.now(),
+        type: 'IN',
+        reference: reference,
+        productName: productName,
+        category: category,
+        unit: unit,
+        quantity: quantity,
+        unitCost: unitCost,
+        totalCost: totalCost,
+        balance: newBalance,
+        date: dateStr,
+        recordedBy: operatorName
+      });
+      saveTransactions(transactions);
+
+      // 3. Save & Render Recent Purchase Order
+      const recentPO = {
+        reference: reference,
+        productName: productName,
+        category: category,
+        unit: unit,
+        quantity: quantity,
+        unitCost: unitCost,
+        totalCost: totalCost,
+        date: dateStr,
+        recordedBy: operatorName
+      };
+      localStorage.setItem(STORAGE_KEYS.RECENT_PO, JSON.stringify(recentPO));
+
+      renderRecentPO();
+      populateDatalists();
+      poForm.reset();
+      totalCostInput.value = '';
+      showToast(`Added ${quantity} ${unit} of ${productName} to inventory.`);
+    });
+
+    // =========================================
+    // CLEAR & LOGOUT BUTTONS
+    // =========================================
+    clearFormBtn.addEventListener('click', () => {
+      poForm.reset();
+      totalCostInput.value = '';
+      referenceInput.focus();
+    });
+
+    clearRecentBtn.addEventListener('click', () => {
+      localStorage.setItem(STORAGE_KEYS.RECENT_PO, JSON.stringify(null));
+      renderRecentPO();
+      showToast('Recent Purchase Order display cleared.');
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // =========================================
+    // INITIALIZE PAGE ON LOAD
+    // =========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sync header user info if logged in via index.html
+      const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+      if (savedUser) {
+        if (savedUser.displayName) {
+          document.getElementById('headerUserName').textContent = savedUser.displayName.toUpperCase();
+        }
+        if (savedUser.role) {
+          document.getElementById('headerUserRole').textContent = savedUser.role.toUpperCase();
+        }
+      }
+
+      populateDatalists();
+      renderRecentPO();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock Card — General Service Division</title>
+  <style>
+    /* =========================================
+       RESET & BASE STYLES
+       ========================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f4;
+      color: #1f2d24;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* =========================================
+       TOP HEADER BAR
+       ========================================= */
+    .topbar {
+      background-color: #9bc503;
+      height: 54px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #132215;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .user-info {
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #132215;
+    }
+
+    .user-role {
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #2f4518;
+    }
+
+    /* =========================================
+       MAIN LAYOUT WRAPPER
+       ========================================= */
+    .layout-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* =========================================
+       SIDEBAR NAVIGATION
+       ========================================= */
+    .sidebar {
+      width: 220px;
+      background-color: #9bc503;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 14px;
+      flex-shrink: 0;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #162418;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: background-color 0.15s ease;
+    }
+
+    .nav-item a:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .nav-item.active a {
+      background-color: #ffffff;
+      color: #162418;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-icon {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      flex-shrink: 0;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      background-color: #ff4757;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.15s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #e83e4d;
+    }
+
+    /* =========================================
+       MAIN CONTENT AREA & LEDGER CARD
+       ========================================= */
+    .main-content {
+      flex: 1;
+      padding: 24px 26px;
+    }
+
+    .ledger-card {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 24px 26px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border: 1px solid #ebeeec;
+    }
+
+    .ledger-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .ledger-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #162418;
+      text-transform: uppercase;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      width: 14px;
+      height: 14px;
+      stroke: #7c8780;
+      fill: none;
+      stroke-width: 2;
+      pointer-events: none;
+    }
+
+    .search-input {
+      height: 32px;
+      width: 205px;
+      padding: 0 12px 0 32px;
+      border: 1px solid #d5dbd7;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #1f2d24;
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.15s ease, width 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: #7da100;
+      width: 240px;
+    }
+
+    .btn-action {
+      height: 32px;
+      padding: 0 13px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+
+    .btn-print,
+    .btn-csv {
+      background-color: #ff4757;
+    }
+
+    /* =========================================
+       STOCK CARD METADATA GRID
+       ========================================= */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 8px 36px;
+      margin-bottom: 18px;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .meta-label {
+      min-width: 132px;
+      font-weight: 700;
+      color: #1f2d24;
+    }
+
+    .meta-value {
+      color: #1f2d24;
+    }
+
+    .meta-value.bold {
+      font-weight: 700;
+      color: #132215;
+    }
+
+    .fund-badge {
+      display: inline-block;
+      background-color: #f0f2f1;
+      border: 1px solid #e1e5e3;
+      border-radius: 4px;
+      padding: 0 6px;
+      font-size: 11px;
+      color: #48544d;
+    }
+
+    /* =========================================
+       SUMMARY AUDIT STRIP (SCREEN ONLY)
+       ========================================= */
+    .audit-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background-color: #f8faf8;
+      border: 1px solid #e4e9e6;
+      border-radius: 8px;
+      padding: 9px 14px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+
+    .audit-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: #243329;
+    }
+
+    .audit-pill strong {
+      color: #132215;
+    }
+
+    /* =========================================
+       STOCK CARD LEDGER TABLE
+       ========================================= */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #e3e7e5;
+      border-radius: 6px;
+    }
+
+    table.stockcard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: center;
+    }
+
+    table.stockcard-table th,
+    table.stockcard-table td {
+      border: 1px solid #e3e7e5;
+      padding: 11px 12px;
+      vertical-align: middle;
+    }
+
+    table.stockcard-table thead th {
+      background-color: #f1f3f2;
+      font-weight: 700;
+      color: #1f2d24;
+    }
+
+    table.stockcard-table tbody tr:hover {
+      background-color: #fafcfb;
+    }
+
+    .ref-po,
+    .ref-srf {
+      font-weight: 700;
+      color: #132215;
+    }
+
+    .empty-ledger {
+      text-align: center;
+      padding: 28px 16px;
+      color: #6f7c74;
+      font-size: 13px;
+    }
+
+    /* =========================================
+       PRINT STYLESHEET (Full-Page Stock Card Fit)
+       ========================================= */
+    @media print {
+      @page {
+        size: legal portrait;
+        margin: 10mm;
+      }
+
+      html,
+      body {
+        width: 100% !important;
+        height: 100% !important;
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        display: block !important;
+      }
+
+      .topbar,
+      .sidebar,
+      .toolbar-actions,
+      .audit-summary,
+      .logout-btn {
+        display: none !important;
+      }
+
+      .layout-container,
+      .main-content {
+        display: block !important;
+        width: 100% !important;
+        min-height: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .ledger-card {
+        width: 100% !important;
+        min-height: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 8px 6px !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      .ledger-header {
+        justify-content: center !important;
+        margin-bottom: 18px !important;
+      }
+
+      .ledger-title {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.8px !important;
+        text-align: center !important;
+        color: #111827 !important;
+      }
+
+      .meta-grid {
+        display: grid !important;
+        grid-template-columns: 1.35fr 1fr !important;
+        gap: 8px 36px !important;
+        margin-bottom: 18px !important;
+        font-size: 13.5px !important;
+        line-height: 1.5 !important;
+      }
+
+      .meta-row {
+        border-bottom: 1px solid #374151 !important;
+        padding-bottom: 4px !important;
+        gap: 10px !important;
+      }
+
+      .meta-label {
+        min-width: 145px !important;
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+      }
+
+      .meta-value {
+        font-size: 13.5px !important;
+        color: #111827 !important;
+      }
+
+      .fund-badge {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 13.5px !important;
+        color: #111827 !important;
+      }
+
+      .table-wrapper {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        border: 1.5px solid #1f2937 !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
+        display: flex !important;
+      }
+
+      table.stockcard-table {
+        width: 100% !important;
+        height: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 13px !important;
+      }
+
+      table.stockcard-table th,
+      table.stockcard-table td {
+        border: 1px solid #374151 !important;
+        padding: 12px 10px !important;
+        color: #111827 !important;
+      }
+
+      table.stockcard-table thead th {
+        background-color: #d9dee2 !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .meta-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .sidebar {
+        width: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-title">GENERAL SERVICE DIVISION</div>
+    <div class="user-info">
+      <div class="user-name" id="headerUserName">CHRISTOPHER JOHN L. HERRERA</div>
+      <div class="user-role" id="headerUserRole">ADMINISTRATOR</div>
+    </div>
+  </header>
+
+  <!-- BODY WRAPPER -->
+  <div class="layout-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="inventory.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Inventory</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="purchaseorder.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span>Purchase Order</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="stockout.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <span>Stock-Out</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="stockcard.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="7" y1="8" x2="17" y2="8"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="7" y1="16" x2="13" y2="16"></line>
+            </svg>
+            <span>Stock Card</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="returnslip.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <polyline points="9 14 4 9 9 4"></polyline>
+              <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <span>Return Slip</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="settings.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="usermanagement.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>User Management</span>
+          </a>
+        </li>
+      </ul>
+
+      <button type="button" class="logout-btn" id="logoutBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        LOGOUT
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <section class="ledger-card">
+
+        <!-- CARD HEADER & ACTIONS -->
+        <div class="ledger-header">
+          <h1 class="ledger-title">STOCK CARD</h1>
+
+          <div class="toolbar-actions">
+            <div class="search-box-wrap">
+              <svg class="search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                id="stockCardSearch"
+                class="search-input"
+                list="stockCardItemList"
+                placeholder="Search item or reference..."
+                autocomplete="off"
+              />
+              <datalist id="stockCardItemList"></datalist>
+            </div>
+
+            <button type="button" class="btn-action btn-print" id="printBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print
+            </button>
+
+            <button type="button" class="btn-action btn-csv" id="exportCsvBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- STOCK CARD METADATA -->
+        <div class="meta-grid">
+          <div class="meta-row">
+            <span class="meta-label">Entity Name:</span>
+            <span class="meta-value" id="metaEntityName">National Irrigation Administration - CENTRAL OFFICE</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Fund Cluster:</span>
+            <span class="meta-value"><span class="fund-badge" id="metaFundCluster"></span></span>
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Item:</span>
+            <span class="meta-value bold" id="metaItemName">0.18m x 1.22m x 4mm thk VINYL TILES (WOOD LOOK)</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Stock No.:</span>
+            <span class="meta-value" id="metaStockNo"></span>
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Description:</span>
+            <span class="meta-value" id="metaDescription">FLOORING MATERIALS</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Re-order Point:</span>
+            <span class="meta-value" id="metaReorderPoint"></span>
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Unit of Measurement:</span>
+            <span class="meta-value" id="metaUnit">PER PIECE</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Current Balance:</span>
+            <span class="meta-value bold" id="metaCurrentBalance">31 PCS</span>
+          </div>
+        </div>
+
+        <!-- AUDIT TRAIL SUMMARY BAR (Screen Only) -->
+        <div class="audit-summary" id="auditSummary">
+          <span class="audit-pill">PO (Stock-In) Count: <strong id="poCount">1</strong></span>
+          <span class="audit-pill">SRF (Stock-Out) Count: <strong id="srfCount">5</strong></span>
+          <span class="audit-pill">Total Received: <strong id="totalReceived">1400</strong></span>
+          <span class="audit-pill">Total Issued: <strong id="totalIssued">1369</strong></span>
+        </div>
+
+        <!-- LEDGER TABLE -->
+        <div class="table-wrapper">
+          <table class="stockcard-table" id="stockCardTable">
+            <thead>
+              <tr>
+                <th rowspan="2" style="width: 11%;">Date</th>
+                <th rowspan="2" style="width: 18%;">Reference</th>
+                <th rowspan="2" style="width: 15%;">Receipt Qty.</th>
+                <th colspan="2" style="width: 24%;">Issue</th>
+                <th rowspan="2" style="width: 16%;">Balance Qty.</th>
+                <th rowspan="2" style="width: 16%;">No. of Days to Consume</th>
+              </tr>
+              <tr>
+                <th style="width: 12%;">Qty.</th>
+                <th style="width: 12%;">Office</th>
+              </tr>
+            </thead>
+            <tbody id="stockCardBody">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      INVENTORY: 'gsd_inventory',
+      TRANSACTIONS: 'gsd_transactions',
+      SETTINGS: 'gsd_settings',
+      CURRENT_USER: 'gsd_current_user'
+    };
+
+    const DEFAULT_ITEMS_CATALOG = [
+      {
+        stockNo: '',
+        itemName: '0.18m x 1.22m x 4mm thk VINYL TILES (WOOD LOOK)',
+        aliases: ['VINYL TILES', 'VINLYN TILES', 'VINYL TILE', 'WOOD LOOK'],
+        description: 'FLOORING MATERIALS',
+        unit: 'PER PIECE',
+        unitShort: 'pcs',
+        reorderPoint: '',
+        entries: [
+          { date: '5/28/26', rawDate: '2026-05-28', type: 'PO', reference: 'P.O 2026-04-05', receiptQty: 1400, issueQty: null, office: null, balanceQty: 1400, daysToConsume: null },
+          { date: '5/29/26', rawDate: '2026-05-29', type: 'SRF', reference: 'SRF # 817', receiptQty: null, issueQty: 330, office: 'OCBS', balanceQty: 1070, daysToConsume: 1 },
+          { date: '6/2/26', rawDate: '2026-06-02', type: 'SRF', reference: 'SRF # 831', receiptQty: null, issueQty: 330, office: 'OCBS', balanceQty: 740, daysToConsume: 4 },
+          { date: '6/3/26', rawDate: '2026-06-03', type: 'SRF', reference: 'SRF # 838', receiptQty: null, issueQty: 220, office: 'OCBS', balanceQty: 520, daysToConsume: 1 },
+          { date: '6/4/26', rawDate: '2026-06-04', type: 'SRF', reference: 'SRF # 842', receiptQty: null, issueQty: 440, office: 'OCBS', balanceQty: 80, daysToConsume: 1 },
+          { date: '6/8/26', rawDate: '2026-06-08', type: 'SRF', reference: 'SRF # 854', receiptQty: null, issueQty: 80, office: 'OCBS', balanceQty: 31, daysToConsume: 4 }
+        ]
+      }
+    ];
+
+    const searchInput = document.getElementById('stockCardSearch');
+    const itemDatalist = document.getElementById('stockCardItemList');
+    const stockCardBody = document.getElementById('stockCardBody');
+
+    const metaEntityName = document.getElementById('metaEntityName');
+    const metaFundCluster = document.getElementById('metaFundCluster');
+    const metaItemName = document.getElementById('metaItemName');
+    const metaUnit = document.getElementById('metaUnit');
+    const metaDescription = document.getElementById('metaDescription');
+    const metaReorderPoint = document.getElementById('metaReorderPoint');
+    const metaStockNo = document.getElementById('metaStockNo');
+    const metaCurrentBalance = document.getElementById('metaCurrentBalance');
+
+    const poCountEl = document.getElementById('poCount');
+    const srfCountEl = document.getElementById('srfCount');
+    const totalReceivedEl = document.getElementById('totalReceived');
+    const totalIssuedEl = document.getElementById('totalIssued');
+
+    const printBtn = document.getElementById('printBtn');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    let activeStockCardData = null;
+
+    function parseFlexibleDate(dateStr) {
+      if (!dateStr) return null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        return new Date(y, m - 1, d);
+      }
+      const parts = dateStr.split(/[\/\-]/).map(Number);
+      if (parts.length === 3) {
+        let [a, b, c] = parts;
+        if (c < 100) c += 2000;
+        if (a > 12) return new Date(c, b - 1, a);
+        return new Date(c, a - 1, b);
+      }
+      const parsed = new Date(dateStr);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatShortDate(dateObj) {
+      if (!dateObj || isNaN(dateObj.getTime())) return '';
+      const m = dateObj.getMonth() + 1;
+      const d = dateObj.getDate();
+      const yy = String(dateObj.getFullYear()).slice(-2);
+      return `${m}/${d}/${yy}`;
+    }
+
+    function computeDaysBetween(prevDateStr, currDateStr) {
+      const d1 = parseFlexibleDate(prevDateStr);
+      const d2 = parseFlexibleDate(currDateStr);
+      if (!d1 || !d2) return 1;
+      const diffDays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+      return diffDays >= 0 ? diffDays : 0;
+    }
+
+    function formatNumberWithCommas(num) {
+      return Number(num).toLocaleString('en-US');
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str ?? '');
+      return div.innerHTML;
+    }
+
+    function buildAllStockCards() {
+      const inventory = JSON.parse(localStorage.getItem(STORAGE_KEYS.INVENTORY) || '[]');
+      const transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+
+      const cardsMap = new Map();
+
+      DEFAULT_ITEMS_CATALOG.forEach(sample => {
+        const key = sample.itemName.toUpperCase();
+        cardsMap.set(key, {
+          stockNo: sample.stockNo,
+          itemName: sample.itemName,
+          aliases: sample.aliases,
+          description: sample.description,
+          unit: sample.unit,
+          unitShort: sample.unitShort,
+          reorderPoint: sample.reorderPoint,
+          entries: [...sample.entries],
+          isDefaultSample: true
+        });
+      });
+
+      inventory.forEach(invItem => {
+        const nameUpper = (invItem.productName || '').trim().toUpperCase();
+        if (!nameUpper) return;
+
+        const existingKey = Array.from(cardsMap.keys()).find(k =>
+          k === nameUpper || (cardsMap.get(k).aliases || []).some(a => nameUpper.includes(a))
+        );
+
+        if (!existingKey) {
+          cardsMap.set(nameUpper, {
+            stockNo: invItem.stockNo || '',
+            itemName: nameUpper,
+            aliases: [],
+            description: (invItem.category || '').toUpperCase(),
+            unit: invItem.unit ? `PER ${String(invItem.unit).toUpperCase()}` : 'PER PIECE',
+            unitShort: (invItem.unit || 'pcs').toLowerCase(),
+            reorderPoint: invItem.reorderPoint ? `${invItem.reorderPoint} ${String(invItem.unit || 'PCS').toUpperCase()}` : '',
+            entries: []
+          });
+        }
+      });
+
+      const txnsByItem = new Map();
+
+      [...transactions].reverse().forEach(txn => {
+        const prodUpper = (txn.productName || '').trim().toUpperCase();
+        if (!prodUpper) return;
+
+        let targetKey = prodUpper;
+        for (const [k, card] of cardsMap.entries()) {
+          if (k === prodUpper || (card.aliases || []).some(a => prodUpper.includes(a) || k.includes(prodUpper))) {
+            targetKey = k;
+            break;
+          }
+        }
+
+        if (!cardsMap.has(targetKey)) {
+          cardsMap.set(targetKey, {
+            stockNo: '',
+            itemName: prodUpper,
+            aliases: [],
+            description: (txn.category || '').toUpperCase(),
+            unit: txn.unit ? `PER ${String(txn.unit).toUpperCase()}` : 'PER PIECE',
+            unitShort: (txn.unit || 'pcs').toLowerCase(),
+            reorderPoint: ''
+          });
+        }
+
+        if (!txnsByItem.has(targetKey)) {
+          txnsByItem.set(targetKey, []);
+        }
+        txnsByItem.get(targetKey).push(txn);
+      });
+
+      cardsMap.forEach((card, key) => {
+        const liveTxns = txnsByItem.get(key) || [];
+        if (liveTxns.length === 0) return;
+
+        let runningBalance = 0;
+        let lastIssueDateStr = null;
+
+        const computedEntries = liveTxns.map(txn => {
+          const parsedDate = parseFlexibleDate(txn.date);
+          const displayDate = parsedDate ? formatShortDate(parsedDate) : (txn.date || '');
+          const isReceipt = txn.type === 'IN' || txn.type === 'PO' || txn.type === 'RETURN';
+
+          let receiptQty = null;
+          let issueQty = null;
+          let office = null;
+          let daysToConsume = null;
+
+          if (isReceipt) {
+            receiptQty = Number(txn.quantity) || 0;
+            runningBalance += receiptQty;
+          } else {
+            issueQty = Number(txn.quantity) || 0;
+            runningBalance = Math.max(0, runningBalance - issueQty);
+            office = txn.office || '';
+            daysToConsume = lastIssueDateStr ? computeDaysBetween(lastIssueDateStr, txn.date) : 1;
+            lastIssueDateStr = txn.date;
+          }
+
+          return {
+            date: displayDate,
+            rawDate: txn.date,
+            type: isReceipt ? 'PO' : 'SRF',
+            reference: txn.reference || (isReceipt ? 'PO' : 'SRF'),
+            receiptQty,
+            issueQty,
+            office,
+            balanceQty: typeof txn.balance === 'number' ? txn.balance : runningBalance,
+            daysToConsume
+          };
+        });
+
+        if (card.entries && card.entries.length > 0 && card.isDefaultSample) {
+          let bal = card.entries[card.entries.length - 1].balanceQty;
+          const appended = computedEntries.map(e => {
+            if (e.receiptQty) bal += e.receiptQty;
+            if (e.issueQty) bal = Math.max(0, bal - e.issueQty);
+            return { ...e, balanceQty: bal };
+          });
+          card.entries = [...card.entries, ...appended];
+        } else {
+          card.entries = computedEntries;
+        }
+      });
+
+      return Array.from(cardsMap.values());
+    }
+
+    function populateSearchSuggestions(cards) {
+      itemDatalist.innerHTML = '';
+      cards.forEach(card => {
+        const opt = document.createElement('option');
+        opt.value = card.itemName;
+        itemDatalist.appendChild(opt);
+      });
+    }
+
+    function renderStockCard(query = '') {
+      const allCards = buildAllStockCards();
+      populateSearchSuggestions(allCards);
+
+      const trimmedQuery = query.trim().toLowerCase();
+      let selectedCard = allCards[0];
+
+      if (trimmedQuery) {
+        const matched = allCards.find(card => {
+          const nameMatch = card.itemName.toLowerCase().includes(trimmedQuery);
+          const stockNoMatch = (card.stockNo || '').toLowerCase().includes(trimmedQuery);
+          const descMatch = (card.description || '').toLowerCase().includes(trimmedQuery);
+          const aliasMatch = (card.aliases || []).some(a => a.toLowerCase().includes(trimmedQuery));
+          const refMatch = (card.entries || []).some(ent => (ent.reference || '').toLowerCase().includes(trimmedQuery));
+          return nameMatch || stockNoMatch || descMatch || aliasMatch || refMatch;
+        });
+
+        if (matched) {
+          selectedCard = matched;
+        } else {
+          activeStockCardData = null;
+          metaItemName.textContent = query.toUpperCase();
+          metaDescription.textContent = '';
+          metaStockNo.textContent = '';
+          metaReorderPoint.textContent = '';
+          metaCurrentBalance.textContent = '';
+          poCountEl.textContent = '0';
+          srfCountEl.textContent = '0';
+          totalReceivedEl.textContent = '0';
+          totalIssuedEl.textContent = '0';
+          stockCardBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="empty-ledger">
+                No stock card records found matching "<strong>${escapeHtml(query)}</strong>".
+              </td>
+            </tr>
+          `;
+          return;
+        }
+      }
+
+      activeStockCardData = selectedCard;
+      const entries = selectedCard.entries || [];
+      const unitLabel = selectedCard.unitShort || 'pcs';
+
+      let poCount = 0;
+      let srfCount = 0;
+      let totalReceived = 0;
+      let totalIssued = 0;
+
+      entries.forEach(ent => {
+        if (ent.receiptQty && ent.receiptQty > 0) {
+          poCount += 1;
+          totalReceived += Number(ent.receiptQty);
+        }
+        if (ent.issueQty && ent.issueQty > 0) {
+          srfCount += 1;
+          totalIssued += Number(ent.issueQty);
+        }
+      });
+
+      const latestBalance = entries.length > 0 ? entries[entries.length - 1].balanceQty : 0;
+
+      metaItemName.textContent = selectedCard.itemName;
+      metaDescription.textContent = selectedCard.description;
+      metaStockNo.textContent = selectedCard.stockNo;
+      metaUnit.textContent = selectedCard.unit;
+      metaReorderPoint.textContent = selectedCard.reorderPoint;
+      metaCurrentBalance.textContent = `${formatNumberWithCommas(latestBalance)} ${unitLabel.toUpperCase()}`;
+
+      poCountEl.textContent = poCount;
+      srfCountEl.textContent = srfCount;
+      totalReceivedEl.textContent = formatNumberWithCommas(totalReceived);
+      totalIssuedEl.textContent = formatNumberWithCommas(totalIssued);
+
+      if (entries.length === 0) {
+        stockCardBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-ledger">
+              No Purchase Order (PO) or Stock-Out (SRF) transactions recorded yet for this item.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      stockCardBody.innerHTML = entries.map(ent => {
+        const isReceipt = ent.receiptQty !== null && ent.receiptQty !== undefined && Number(ent.receiptQty) > 0;
+        const receiptCell = isReceipt ? `${formatNumberWithCommas(ent.receiptQty)} ${unitLabel}` : '';
+        const issueQtyCell = (!isReceipt && ent.issueQty !== null && ent.issueQty !== undefined) ? `${formatNumberWithCommas(ent.issueQty)} ${unitLabel}` : '';
+        const officeCell = (!isReceipt && ent.office) ? escapeHtml(ent.office) : '';
+        const balanceCell = `${formatNumberWithCommas(ent.balanceQty)} ${unitLabel}`;
+        const daysCell = (!isReceipt && ent.daysToConsume !== null && ent.daysToConsume !== undefined) ? `${ent.daysToConsume}` : '';
+        const refClass = isReceipt ? 'ref-po' : 'ref-srf';
+
+        return `
+          <tr>
+            <td>${escapeHtml(ent.date)}</td>
+            <td class="${refClass}">${escapeHtml(ent.reference)}</td>
+            <td>${receiptCell}</td>
+            <td>${issueQtyCell}</td>
+            <td>${officeCell}</td>
+            <td>${balanceCell}</td>
+            <td>${daysCell}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportStockCardCsv() {
+      if (!activeStockCardData) return;
+
+      const card = activeStockCardData;
+      const unitLabel = card.unitShort || 'pcs';
+      const rows = [
+        ['Entity Name', metaEntityName.textContent],
+        ['Item', card.itemName],
+        ['Description', card.description],
+        ['Stock No.', card.stockNo],
+        ['Unit of Measurement', card.unit],
+        ['Re-order Point', card.reorderPoint],
+        [],
+        ['Date', 'Reference', 'Receipt Qty.', 'Issue Qty.', 'Issue Office', 'Balance Qty.', 'No. of Days to Consume']
+      ];
+
+      (card.entries || []).forEach(ent => {
+        const isReceipt = ent.receiptQty && Number(ent.receiptQty) > 0;
+        rows.push([
+          ent.date,
+          ent.reference,
+          isReceipt ? `${ent.receiptQty} ${unitLabel}` : '',
+          !isReceipt && ent.issueQty ? `${ent.issueQty} ${unitLabel}` : '',
+          !isReceipt && ent.office ? ent.office : '',
+          `${ent.balanceQty} ${unitLabel}`,
+          !isReceipt && ent.daysToConsume !== null ? ent.daysToConsume : ''
+        ]);
+      });
+
+      const csvContent = rows
+        .map(row => row.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `StockCard_${(card.itemName || 'Item').replace(/[^a-zA-Z0-9-_]/g, '_')}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      renderStockCard(e.target.value);
+    });
+
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
+
+    exportCsvBtn.addEventListener('click', exportStockCardCsv);
+
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+      if (savedUser) {
+        if (savedUser.displayName) {
+          document.getElementById('headerUserName').textContent = savedUser.displayName.toUpperCase();
+        }
+        if (savedUser.role) {
+          document.getElementById('headerUserRole').textContent = savedUser.role.toUpperCase();
+        }
+      }
+
+      const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || 'null');
+      if (savedSettings) {
+        if (savedSettings.entityName) metaEntityName.textContent = savedSettings.entityName;
+        if (savedSettings.fundCluster) metaFundCluster.textContent = savedSettings.fundCluster;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const itemParam = params.get('item');
+      if (itemParam) {
+        searchInput.value = itemParam;
+        renderStockCard(itemParam);
+      } else {
+        renderStockCard('');
+      }
+    });
+  </script>
+</body>
+</html>

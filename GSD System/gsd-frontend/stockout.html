@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock-Out — General Service Division</title>
+  <style>
+    /* =========================================
+       RESET & BASE STYLES
+       ========================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f4;
+      color: #1f2d24;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* =========================================
+       TOP HEADER BAR
+       ========================================= */
+    .topbar {
+      background-color: #9bc503;
+      height: 54px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #132215;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .user-info {
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #132215;
+    }
+
+    .user-role {
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #2f4518;
+    }
+
+    /* =========================================
+       MAIN LAYOUT WRAPPER
+       ========================================= */
+    .layout-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* =========================================
+       SIDEBAR NAVIGATION
+       ========================================= */
+    .sidebar {
+      width: 220px;
+      background-color: #9bc503;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 14px;
+      flex-shrink: 0;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #162418;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: background-color 0.15s ease;
+    }
+
+    .nav-item a:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .nav-item.active a {
+      background-color: #ffffff;
+      color: #162418;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-icon {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      flex-shrink: 0;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      background-color: #ff4757;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.15s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #e83e4d;
+    }
+
+    /* =========================================
+       MAIN CONTENT AREA & CARDS
+       ========================================= */
+    .main-content {
+      flex: 1;
+      padding: 26px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 26px 28px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border: 1px solid #ebeeec;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #173322;
+    }
+
+    .card-title-group svg {
+      width: 20px;
+      height: 20px;
+      stroke: #173322;
+      fill: none;
+      stroke-width: 1.9;
+    }
+
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #173322;
+    }
+
+    /* =========================================
+       FORM ELEMENTS
+       ========================================= */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2c3e33;
+      letter-spacing: 0.3px;
+    }
+
+    .stock-hint {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5b7800;
+    }
+
+    .stock-hint.error {
+      color: #d63031;
+    }
+
+    .pill-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 16px;
+      border: 1px solid #3c4841;
+      border-radius: 999px;
+      font-size: 13px;
+      color: #1f2d24;
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pill-input::placeholder {
+      color: #88928c;
+    }
+
+    .pill-input:focus {
+      border-color: #7da100;
+      box-shadow: 0 0 0 3px rgba(155, 197, 3, 0.22);
+    }
+
+    .pill-input[readonly] {
+      background-color: #fafbfa;
+      color: #1f2d24;
+      font-weight: 600;
+    }
+
+    /* =========================================
+       BUTTONS
+       ========================================= */
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .pill-btn {
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid #2b3830;
+      background-color: #ffffff;
+      color: #173322;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      background-color: #f0f4f1;
+    }
+
+    .pill-btn.primary:hover {
+      background-color: #9bc503;
+      border-color: #8ab002;
+      color: #132215;
+    }
+
+    .pill-btn-sm {
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1px solid #2b3830;
+      background-color: #ffffff;
+      color: #173322;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .pill-btn-sm:hover {
+      background-color: #f0f4f1;
+    }
+
+    /* =========================================
+       RECENT STOCK-OUT DISPLAY
+       ========================================= */
+    .recent-so-details {
+      font-size: 13px;
+      color: #243329;
+      line-height: 1.75;
+    }
+
+    .recent-so-ref {
+      margin-bottom: 2px;
+    }
+
+    .recent-so-ref strong {
+      font-weight: 700;
+      color: #132215;
+    }
+
+    .recent-so-product {
+      font-size: 14px;
+      font-weight: 700;
+      color: #132215;
+      margin-bottom: 8px;
+    }
+
+    .recent-so-meta {
+      margin-top: 12px;
+    }
+
+    .empty-state {
+      color: #7c8780;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 24px;
+      background-color: #173322;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 999;
+    }
+
+    .toast.error {
+      background-color: #c0392b;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 960px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        width: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-title">GENERAL SERVICE DIVISION</div>
+    <div class="user-info">
+      <div class="user-name" id="headerUserName">CHRISTOPHER JOHN L. HERRERA</div>
+      <div class="user-role" id="headerUserRole">ADMINISTRATOR</div>
+    </div>
+  </header>
+
+  <!-- BODY WRAPPER -->
+  <div class="layout-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="inventory.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Inventory</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="purchaseorder.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span>Purchase Order</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="stockout.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <span>Stock-Out</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="stockcard.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="7" y1="8" x2="17" y2="8"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="7" y1="16" x2="13" y2="16"></line>
+            </svg>
+            <span>Stock Card</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="returnslip.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <polyline points="9 14 4 9 9 4"></polyline>
+              <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <span>Return Slip</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="settings.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="usermanagement.html">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>User Management</span>
+          </a>
+        </li>
+      </ul>
+
+      <button type="button" class="logout-btn" id="logoutBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        LOGOUT
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- LEFT CARD: NEW STOCK-OUT (SRF) FORM -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <svg viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <h2 class="card-title">New Stock-Out (SRF)</h2>
+          </div>
+        </div>
+
+        <form id="stockOutForm" autocomplete="off">
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="srfReferenceInput">SRF REFERENCE NUMBER</label>
+            </div>
+            <input
+              type="text"
+              id="srfReferenceInput"
+              class="pill-input"
+              placeholder="e.g. SRF # 817"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="productDeductInput">PRODUCT TO DEDUCT</label>
+              <span class="stock-hint" id="availableStockHint"></span>
+            </div>
+            <input
+              type="text"
+              id="productDeductInput"
+              class="pill-input"
+              list="inventoryProductList"
+              placeholder="Search inventory..."
+              required
+            />
+            <datalist id="inventoryProductList"></datalist>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="officeInput">REQUESTING OFFICE / DEPARTMENT</label>
+            </div>
+            <input
+              type="text"
+              id="officeInput"
+              class="pill-input"
+              list="officeSuggestions"
+              placeholder="e.g. OCBS"
+              required
+            />
+            <datalist id="officeSuggestions">
+              <option value="OCBS"></option>
+              <option value="GSD"></option>
+              <option value="ADMIN"></option>
+              <option value="ACCOUNTING"></option>
+              <option value="REGISTRAR"></option>
+              <option value="HRMO"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="unitInput">UNIT</label>
+            </div>
+            <input
+              type="text"
+              id="unitInput"
+              class="pill-input"
+              list="unitSuggestions"
+              placeholder="e.g. ROLLS, PCS, BAGS"
+              required
+            />
+            <datalist id="unitSuggestions">
+              <option value="ROLLS"></option>
+              <option value="PCS"></option>
+              <option value="BAGS"></option>
+              <option value="BOX"></option>
+              <option value="SET"></option>
+              <option value="GALLON"></option>
+              <option value="METER"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="quantityDeductInput">QUANTITY TO DEDUCT</label>
+            </div>
+            <input
+              type="number"
+              id="quantityDeductInput"
+              class="pill-input"
+              min="1"
+              step="1"
+              placeholder="Enter quantity"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="unitCostInput">UNIT COST (PER PIECE)</label>
+            </div>
+            <input
+              type="number"
+              id="unitCostInput"
+              class="pill-input"
+              min="0"
+              step="0.01"
+              placeholder="Enter unit cost"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="totalBalanceValueInput">TOTAL BALANCE VALUE</label>
+            </div>
+            <input
+              type="text"
+              id="totalBalanceValueInput"
+              class="pill-input"
+              placeholder="Auto-calculated total value"
+              readonly
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="pill-btn primary">Deduct from Inventory</button>
+            <button type="button" class="pill-btn" id="clearFormBtn">Clear Form</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- RIGHT CARD: RECENT STOCK-OUTS -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"></circle>
+              <polyline points="12 7 12 12 15 14"></polyline>
+            </svg>
+            <h2 class="card-title">Recent Stock-Outs</h2>
+          </div>
+          <button type="button" class="pill-btn-sm" id="clearRecentBtn">Clear Form</button>
+        </div>
+
+        <div id="recentStockOutContainer" class="recent-so-details">
+          <!-- Populated dynamically by JavaScript -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // =========================================
+    // STORAGE KEYS (Shared across MPA pages)
+    // =========================================
+    const STORAGE_KEYS = {
+      INVENTORY: 'gsd_inventory',
+      TRANSACTIONS: 'gsd_transactions',
+      RECENT_STOCKOUT: 'gsd_recent_stockout',
+      CURRENT_USER: 'gsd_current_user'
+    };
+
+    // =========================================
+    // DEFAULT INITIAL DATA (Matches Screenshot)
+    // =========================================
+    const DEFAULT_RECENT_STOCKOUT = {
+      reference: 'SRF # 817',
+      productName: 'Phelps Dodge 3.5mm² THKN Electrical Wire (150m)',
+      office: 'OCBS',
+      quantity: 2,
+      unit: 'ROLLS',
+      unitCost: 4250.00,
+      totalValue: 8500.00,
+      date: '15/10/2026',
+      recordedBy: 'Christopher John L. Herrera'
+    };
+
+    // =========================================
+    // DOM ELEMENTS
+    // =========================================
+    const stockOutForm = document.getElementById('stockOutForm');
+    const srfReferenceInput = document.getElementById('srfReferenceInput');
+    const productDeductInput = document.getElementById('productDeductInput');
+    const availableStockHint = document.getElementById('availableStockHint');
+    const officeInput = document.getElementById('officeInput');
+    const unitInput = document.getElementById('unitInput');
+    const quantityDeductInput = document.getElementById('quantityDeductInput');
+    const unitCostInput = document.getElementById('unitCostInput');
+    const totalBalanceValueInput = document.getElementById('totalBalanceValueInput');
+
+    const inventoryProductList = document.getElementById('inventoryProductList');
+    const recentStockOutContainer = document.getElementById('recentStockOutContainer');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+    const clearRecentBtn = document.getElementById('clearRecentBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const toastEl = document.getElementById('toast');
+
+    let selectedInventoryItem = null;
+
+    // =========================================
+    // HELPER FUNCTIONS
+    // =========================================
+    function formatCurrency(num) {
+      return Number(num).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // DD/MM/YYYY format matching "15/10/2026" in Recent Stock-Outs
+    function getFormattedDate() {
+      const now = new Date();
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function getCurrentOperatorName() {
+      const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+      if (savedUser && savedUser.displayName) {
+        return savedUser.displayName;
+      }
+      return 'Christopher John L. Herrera';
+    }
+
+    function showToast(message, isError = false) {
+      toastEl.textContent = message;
+      toastEl.classList.toggle('error', isError);
+      toastEl.classList.add('show');
+      setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 3200);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // =========================================
+    // STORAGE ACCESSORS
+    // =========================================
+    function getInventory() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.INVENTORY) || '[]');
+    }
+
+    function saveInventory(items) {
+      localStorage.setItem(STORAGE_KEYS.INVENTORY, JSON.stringify(items));
+    }
+
+    function getTransactions() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+    }
+
+    function saveTransactions(logs) {
+      localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(logs));
+    }
+
+    // =========================================
+    // POPULATE INVENTORY SEARCH DROPDOWN
+    // =========================================
+    function populateInventoryList() {
+      const inventory = getInventory();
+      inventoryProductList.innerHTML = '';
+
+      inventory.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.productName;
+        option.label = `Available: ${item.quantity} ${item.unit}`;
+        inventoryProductList.appendChild(option);
+      });
+    }
+
+    // Auto-fill Unit, Unit Cost & Available Stock when selecting a product
+    productDeductInput.addEventListener('input', () => {
+      const query = productDeductInput.value.trim().toLowerCase();
+      const inventory = getInventory();
+      const match = inventory.find(item => item.productName.toLowerCase() === query);
+
+      if (match) {
+        selectedInventoryItem = match;
+        unitInput.value = match.unit || '';
+        unitCostInput.value = match.unitCost !== undefined ? match.unitCost : '';
+        quantityDeductInput.max = match.quantity;
+
+        availableStockHint.textContent = `Available Stock: ${match.quantity} ${match.unit}`;
+        availableStockHint.classList.toggle('error', Number(match.quantity) <= 0);
+        calculateTotalValue();
+      } else {
+        selectedInventoryItem = null;
+        quantityDeductInput.removeAttribute('max');
+        availableStockHint.textContent = '';
+        availableStockHint.classList.remove('error');
+      }
+    });
+
+    // =========================================
+    // LIVE TOTAL VALUE CALCULATION
+    // =========================================
+    function calculateTotalValue() {
+      const qty = parseFloat(quantityDeductInput.value);
+      const cost = parseFloat(unitCostInput.value);
+
+      if (!isNaN(qty) && qty > 0 && !isNaN(cost) && cost >= 0) {
+        // If product is matched in inventory, show remaining balance value or deducted total value
+        if (selectedInventoryItem) {
+          const remainingQty = Math.max(0, Number(selectedInventoryItem.quantity) - qty);
+          const remainingBalanceValue = remainingQty * cost;
+          totalBalanceValueInput.value = formatCurrency(remainingBalanceValue);
+        } else {
+          totalBalanceValueInput.value = formatCurrency(qty * cost);
+        }
+      } else {
+        totalBalanceValueInput.value = '';
+      }
+    }
+
+    quantityDeductInput.addEventListener('input', calculateTotalValue);
+    unitCostInput.addEventListener('input', calculateTotalValue);
+
+    // =========================================
+    // RENDER RECENT STOCK-OUTS CARD
+    // =========================================
+    function renderRecentStockOut() {
+      const storedSO = localStorage.getItem(STORAGE_KEYS.RECENT_STOCKOUT);
+
+      if (storedSO === null) {
+        localStorage.setItem(STORAGE_KEYS.RECENT_STOCKOUT, JSON.stringify(DEFAULT_RECENT_STOCKOUT));
+      }
+
+      const so = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_STOCKOUT) || 'null');
+
+      if (!so) {
+        recentStockOutContainer.innerHTML = `<p class="empty-state">No recent stock-out displayed.</p>`;
+        return;
+      }
+
+      recentStockOutContainer.innerHTML = `
+        <div class="recent-so-ref">Ref: <strong>${escapeHtml(so.reference)}</strong></div>
+        <div class="recent-so-product">${escapeHtml(so.productName)}</div>
+        <div>Office: ${escapeHtml(so.office)}</div>
+        <div>Qty: ${so.quantity} ${escapeHtml(so.unit)}</div>
+        <div class="recent-so-meta">${escapeHtml(so.date)} — ${escapeHtml(so.recordedBy)}</div>
+      `;
+    }
+
+    // =========================================
+    // FORM SUBMISSION: DEDUCT FROM INVENTORY
+    // =========================================
+    stockOutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const reference = srfReferenceInput.value.trim();
+      const productName = productDeductInput.value.trim();
+      const office = officeInput.value.trim().toUpperCase();
+      const unit = unitInput.value.trim().toUpperCase();
+      const quantity = parseInt(quantityDeductInput.value, 10);
+      const unitCost = parseFloat(unitCostInput.value);
+
+      if (!reference || !productName || !office || !unit || isNaN(quantity) || quantity <= 0 || isNaN(unitCost) || unitCost < 0) {
+        showToast('Please fill out all required fields properly.', true);
+        return;
+      }
+
+      const inventory = getInventory();
+      const itemIndex = inventory.findIndex(
+        item => item.productName.toLowerCase() === productName.toLowerCase()
+      );
+
+      if (itemIndex === -1) {
+        showToast('Product not found in inventory. Record a Purchase Order first.', true);
+        return;
+      }
+
+      const currentStock = Number(inventory[itemIndex].quantity);
+
+      if (quantity > currentStock) {
+        showToast(`Insufficient stock! Only ${currentStock} ${inventory[itemIndex].unit} available.`, true);
+        return;
+      }
+
+      const dateStr = getFormattedDate();
+      const operatorName = getCurrentOperatorName();
+      const newBalance = currentStock - quantity;
+      const totalDeductedValue = Number((quantity * unitCost).toFixed(2));
+
+      // 1. Deduct stock from Inventory in localStorage
+      inventory[itemIndex].quantity = newBalance;
+      inventory[itemIndex].unitCost = unitCost;
+      inventory[itemIndex].lastUpdated = dateStr;
+      saveInventory(inventory);
+
+      // 2. Append OUT transaction for Stock Card module
+      const transactions = getTransactions();
+      transactions.unshift({
+        id: 'TXN-' + Date.now(),
+        type: 'OUT',
+        reference: reference,
+        productName: inventory[itemIndex].productName,
+        category: inventory[itemIndex].category || '',
+        office: office,
+        unit: unit,
+        quantity: quantity,
+        unitCost: unitCost,
+        totalCost: totalDeductedValue,
+        balance: newBalance,
+        date: dateStr,
+        recordedBy: operatorName
+      });
+      saveTransactions(transactions);
+
+      // 3. Save & Render Recent Stock-Out
+      const recentStockOut = {
+        reference: reference,
+        productName: inventory[itemIndex].productName,
+        office: office,
+        quantity: quantity,
+        unit: unit,
+        unitCost: unitCost,
+        totalValue: totalDeductedValue,
+        date: dateStr,
+        recordedBy: operatorName
+      };
+      localStorage.setItem(STORAGE_KEYS.RECENT_STOCKOUT, JSON.stringify(recentStockOut));
+
+      renderRecentStockOut();
+      populateInventoryList();
+      stockOutForm.reset();
+      totalBalanceValueInput.value = '';
+      availableStockHint.textContent = '';
+      selectedInventoryItem = null;
+
+      showToast(`Deducted ${quantity} ${unit} of ${recentStockOut.productName} for ${office}.`);
+    });
+
+    // =========================================
+    // CLEAR & LOGOUT BUTTONS
+    // =========================================
+    clearFormBtn.addEventListener('click', () => {
+      stockOutForm.reset();
+      totalBalanceValueInput.value = '';
+      availableStockHint.textContent = '';
+      selectedInventoryItem = null;
+      srfReferenceInput.focus();
+    });
+
+    clearRecentBtn.addEventListener('click', () => {
+      localStorage.setItem(STORAGE_KEYS.RECENT_STOCKOUT, JSON.stringify(null));
+      renderRecentStockOut();
+      showToast('Recent Stock-Outs display cleared.');
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // =========================================
+    // INITIALIZE PAGE ON LOAD
+    // =========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+      if (savedUser) {
+        if (savedUser.displayName) {
+          document.getElementById('headerUserName').textContent = savedUser.displayName.toUpperCase();
+        }
+        if (savedUser.role) {
+          document.getElementById('headerUserRole').textContent = savedUser.role.toUpperCase();
+        }
+      }
+
+      populateInventoryList();
+      renderRecentStockOut();
+    });
+  </script>
+</body>
+</html>
